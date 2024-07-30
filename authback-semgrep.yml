@@ -1,0 +1,35 @@
+rules:
+  - id: missed-authback
+    languages:
+      - csharp
+    severity: ERROR
+    message: Missed [AuthBack] attribute
+    patterns:
+      - pattern: |-
+          public class $CLASS : ResourceBasedAuthSupportController {
+            ...
+          }
+      - pattern-inside: |-
+          using AuthBack.Service.Attributes;
+          ...
+      - pattern-not:
+          pattern-either:
+            - pattern: |-
+                [AuthBack(...)]
+                public class $CLASS : ResourceBasedAuthSupportController {
+                  ...
+                }
+            - pattern: |-
+                [AuthBack(...)]
+                public $TYPE $METHOD(...) {
+                  ...
+                }
+            - pattern: |-
+                public class $CLASS : ResourceBasedAuthSupportController {
+                  ...
+                  [AuthBack(...)]
+                  public $TYPE $METHOD(...) {
+                  ...
+                  }
+                  ...
+                }
